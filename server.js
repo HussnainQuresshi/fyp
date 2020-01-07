@@ -14,15 +14,11 @@ mongoose
   })
   .then(() => console.log("connected to the mongodb ....."))
   .catch(err => console.error(err.message));
-
-// API calls
-if (process.env.NODE_ENV === "production") {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, "client/build")));
-  // Handle React routing, return all requests to React app
-  app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
-  });
-}
+// Serve any static files
+app.use(express.static(path.join(__dirname, "Client/build")));
+// Handle React routing, return all requests to React app
+app.get("*", function(req, res) {
+  res.sendFile(path.join(__dirname, "Client/build", "index.html"));
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
