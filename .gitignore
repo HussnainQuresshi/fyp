@@ -1,15 +1,5 @@
 /.idea
 /node_modules
-/Client/node_modules
-/Client/public
-/Client/public
-/Client/src
-/Client/.editorconfig
-/Client/.env
-/Client/.gitignore
-/Client/package-lock.json
-/Client/package.json
-/Client/README.md
 package-lock.json
 .DS_Store
 /.vimrc
