@@ -14,9 +14,7 @@ mongoose
   })
   .then(() => console.log("connected to the mongodb ....."))
   .catch(err => console.error(err.message));
-// Serve any static files
 app.use(express.static(path.join(__dirname, "Client/build")));
-// Handle React routing, return all requests to React app
 app.get("*", function(req, res) {
   res.sendFile(path.join(__dirname, "Client/build", "index.html"));
 });

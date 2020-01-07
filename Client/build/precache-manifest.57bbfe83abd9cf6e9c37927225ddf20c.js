@@ -1,39 +1,39 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "639a24edd6aaeb07c089268b813d2bbe",
+    "revision": "32ed00881a009e4605f04b5a5d975882",
     "url": "/index.html"
   },
   {
-    "revision": "6f6824aec93dfcb9c97b",
+    "revision": "61a782a42d91fc957fed",
     "url": "/static/css/2.d0bfad73.chunk.css"
   },
   {
-    "revision": "bea35685e876896c7f3c",
+    "revision": "c1a4e7d0bfb2c7b65ec8",
     "url": "/static/css/main.32f7ce1b.chunk.css"
   },
   {
-    "revision": "6f6824aec93dfcb9c97b",
-    "url": "/static/js/2.16e6bb95.chunk.js"
+    "revision": "61a782a42d91fc957fed",
+    "url": "/static/js/2.8199018a.chunk.js"
   },
   {
     "revision": "a4a43530bc068747ab1cff731faf185b",
-    "url": "/static/js/2.16e6bb95.chunk.js.LICENSE"
+    "url": "/static/js/2.8199018a.chunk.js.LICENSE"
   },
   {
-    "revision": "8c1912b32c21aa050a75",
-    "url": "/static/js/3.5e02f787.chunk.js"
+    "revision": "ade02c7adb3e83c83387",
+    "url": "/static/js/3.7e5e0f4b.chunk.js"
   },
   {
-    "revision": "128346599da8afb5e660",
-    "url": "/static/js/4.6a432ca5.chunk.js"
+    "revision": "7ad1ca4915a29cbb7c73",
+    "url": "/static/js/4.54a91d79.chunk.js"
   },
   {
-    "revision": "bea35685e876896c7f3c",
-    "url": "/static/js/main.06c8f725.chunk.js"
+    "revision": "c1a4e7d0bfb2c7b65ec8",
+    "url": "/static/js/main.9c13b4a1.chunk.js"
   },
   {
-    "revision": "3647994c710c65626dbe",
-    "url": "/static/js/runtime-main.ba027b9f.js"
+    "revision": "8c6be4bdf4f0e0c04feb",
+    "url": "/static/js/runtime-main.916bf49e.js"
   },
   {
     "revision": "39b2c3031be6b4ea96e2e3e95d307814",
@@ -1092,8 +1092,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/media/hu.e5e334fd.svg"
   },
   {
-    "revision": "58de993ddfef738cf7172d5310a0c3bd",
-    "url": "/static/media/hussnain.58de993d.jpg"
+    "revision": "03b4977927bbfaf7659c88661b2e8d90",
+    "url": "/static/media/hussnain.03b49779.jpg"
   },
   {
     "revision": "17b996767ee0373a262c32a16248a3b6",
