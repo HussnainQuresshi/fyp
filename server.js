@@ -3,8 +3,9 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const app = require("./app");
 const mongoose = require("mongoose");
-mongoose.Promise = global.Promise;
 const db = require("./configuration/index");
+
+mongoose.Promise = global.Promise;
 const port = process.env.PORT || 5000;
 app.use(bodyParser.urlencoded({ extended: true }));
 mongoose
