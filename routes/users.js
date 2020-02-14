@@ -72,6 +72,7 @@ router
     passportJWT,
     Controller.addQuestion
   );
+router.route("/edit_question").post(passportJWT, Controller.editQuestion);
 router.route("/question").get(passportJWT, Controller.getQuestion);
 router.route("/del_question").post(passportJWT, Controller.deleteQuestion);
 router
@@ -79,6 +80,7 @@ router
   .post(validateBody(schemas.userSchema), passportJWT, Controller.addUser);
 router.route("/getuser").post(passportJWT, Controller.getUser);
 router.route("/result").post(passportJWT2, Controller.addResult);
+router.route("/dashboard").post(passportJWT, Controller.dashboard);
 router.route("/result").get(passportJWT, Controller.getResult);
 router.route("/isauth").get(passportJWT, Controller.isAuth);
 router.route("/isauthuser").get(passportJWT2, Controller.isAuthUser);

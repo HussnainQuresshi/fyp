@@ -299,6 +299,22 @@ module.exports = {
       success: true
     });
   },
+  editQuestion: async (req, res, next) => {
+    const { id, name, type } = req.body;
+    console.log("ir a geya function k indr", { id, name, type });
+    let foundQuestion = await Question.findById(id);
+    if (foundQuestion) {
+      console.log("found question ya a", foundQuestion);
+      foundQuestion.name = name;
+      foundQuestion.type = type;
+      await foundQuestion.save();
+    } else {
+      return res.status(403).json({ message: "question already exist" });
+    }
+    return res.status(200).json({
+      success: true
+    });
+  },
   getQuestion: async (req, res, next) => {
     const questions = await Question.find();
 
@@ -394,26 +410,139 @@ module.exports = {
         foundResult.courseDetail.map((q, i) => {
           let ques = q.response + courseDetail[i].response;
           ques = ques / 2;
-          NewCourseDetails.push({
-            questionId: q.questionId,
-            response: ques
-          });
+          switch (courseDetail[i].response) {
+            case 1:
+              NewCourseDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa,
+                a: q.a,
+                n: q.n,
+                d: q.d,
+                sd: q.sd + 1
+              });
+              break;
+            case 2:
+              NewCourseDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa,
+                a: q.a,
+                n: q.n,
+                d: q.d + 1,
+                sd: q.sd
+              });
+              break;
+            case 3:
+              NewCourseDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa,
+                a: q.a,
+                n: q.n + 1,
+                d: q.d,
+                sd: q.sd
+              });
+              break;
+            case 4:
+              NewCourseDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa,
+                a: q.a + 1,
+                n: q.n,
+                d: q.d,
+                sd: q.sd
+              });
+              break;
+            case 5:
+              NewCourseDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa + 1,
+                a: q.a,
+                n: q.n,
+                d: q.d,
+                sd: q.sd
+              });
+              break;
+          }
         });
         foundResult.teacherDetail.map((q, i) => {
           let ques = q.response + teacherDetail[i].response;
           ques = ques / 2;
-          NewTeacherDetails.push({
-            questionId: q.questionId,
-            response: ques
-          });
+          switch (teacherDetail[i].response) {
+            case 1:
+              NewTeacherDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa,
+                a: q.a,
+                n: q.n,
+                d: q.d,
+                sd: q.sd + 1
+              });
+              break;
+            case 2:
+              NewTeacherDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa,
+                a: q.a,
+                n: q.n,
+                d: q.d + 1,
+                sd: q.sd
+              });
+              break;
+            case 3:
+              NewTeacherDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa,
+                a: q.a,
+                n: q.n + 1,
+                d: q.d,
+                sd: q.sd
+              });
+              break;
+            case 4:
+              NewTeacherDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa,
+                a: q.a + 1,
+                n: q.n,
+                d: q.d,
+                sd: q.sd
+              });
+              break;
+            case 5:
+              NewTeacherDetails.push({
+                questionId: q.questionId,
+                response: ques,
+                sa: q.sa + 1,
+                a: q.a,
+                n: q.n,
+                d: q.d,
+                sd: q.sd
+              });
+              break;
+          }
         });
         foundResult.courseDetail = NewCourseDetails;
+
         foundResult.teacherDetail = NewTeacherDetails;
+
         foundResult.totalstudents = foundResult.totalstudents + 1;
-        const result = await foundResult.save();
+        console.log(foundResult);
+        await foundResult.save();
+
         const user = await User.findById({ _id: _id });
+
         user.evaluation.push(courseId);
+
         await user.save();
+
         return res.status(200).json({
           success: true
         });
@@ -422,9 +551,121 @@ module.exports = {
         let courseDetail = [];
         question.map(ques => {
           if (ques.type === "Course") {
-            courseDetail.push(ques);
+            switch (ques.response) {
+              case 1:
+                courseDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 0,
+                  a: 0,
+                  n: 0,
+                  d: 0,
+                  sd: 1
+                });
+                break;
+              case 2:
+                courseDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 0,
+                  a: 0,
+                  n: 0,
+                  d: 1,
+                  sd: 0
+                });
+                break;
+              case 3:
+                courseDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 0,
+                  a: 0,
+                  n: 1,
+                  d: 0,
+                  sd: 0
+                });
+                break;
+              case 4:
+                courseDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 0,
+                  a: 1,
+                  n: 0,
+                  d: 0,
+                  sd: 0
+                });
+                break;
+              case 5:
+                courseDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 1,
+                  a: 0,
+                  n: 0,
+                  d: 0,
+                  sd: 0
+                });
+                break;
+            }
           } else {
-            teacherDetail.push(ques);
+            switch (ques.response) {
+              case 1:
+                teacherDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 0,
+                  a: 0,
+                  n: 0,
+                  d: 0,
+                  sd: 1
+                });
+                break;
+              case 2:
+                teacherDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 0,
+                  a: 0,
+                  n: 0,
+                  d: 1,
+                  sd: 0
+                });
+                break;
+              case 3:
+                teacherDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 0,
+                  a: 0,
+                  n: 1,
+                  d: 0,
+                  sd: 0
+                });
+                break;
+              case 4:
+                teacherDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 0,
+                  a: 1,
+                  n: 0,
+                  d: 0,
+                  sd: 0
+                });
+                break;
+              case 5:
+                teacherDetail.push({
+                  questionId: ques.questionId,
+                  response: ques.response,
+                  sa: 1,
+                  a: 0,
+                  n: 0,
+                  d: 0,
+                  sd: 0
+                });
+                break;
+            }
           }
         });
         const newResult = new Result({
@@ -447,8 +688,14 @@ module.exports = {
       }
     }
   },
-  getResult: async (req, res, next) => {
-    const results = await Result.find();
+  dashboard: async (req, res, next) => {
+    const { department, semester, batch } = req.body;
+
+    const results = await Result.find().and([
+      { departmentId: department },
+      { semesterId: semester },
+      { batch: batch }
+    ]);
     if (results) {
       let updatedResults = results.map(async r => {
         let foundCourse = await Course.findOne({ _id: r.courseId });
@@ -469,6 +716,55 @@ module.exports = {
       let x = updatedResults;
       updatedResults = [];
 
+      x.map(r => {
+        if (r) {
+          updatedResults.push(r);
+        }
+      });
+
+      return res.status(200).json({
+        success: true,
+        updatedResults
+      });
+    }
+  },
+  getResult: async (req, res, next) => {
+    const results = await Result.find();
+    if (results) {
+      let updatedResults = results.map(async r => {
+        let foundCourse = await Course.findOne({ _id: r.courseId });
+        let foundTeacher = await Teacher.findOne({ _id: r.teacherId });
+        let foundSemester = await Semester.findOne({ _id: r.semesterId });
+        let foundDepartment = await Department.findOne({
+          _id: r.departmentId
+        });
+        if (foundSemester && foundTeacher && foundDepartment && foundCourse) {
+          r.teacherId = foundTeacher.name;
+          r.semesterId = foundSemester.name;
+          r.departmentId = foundDepartment.name;
+          r.courseId = foundCourse.name;
+
+          let newdetail = [];
+          newdetail = r.courseDetail.map(async t => {
+            let x = await Question.findOne({ _id: t.questionId });
+            t.questionId = x.name;
+            return t;
+          });
+          newdetail = await Promise.all(newdetail);
+          r.courseDetail = newdetail;
+          newdetail = r.teacherDetail.map(async t => {
+            let x = await Question.findOne({ _id: t.questionId });
+            t.questionId = x.name;
+            return t;
+          });
+          newdetail = await Promise.all(newdetail);
+          r.teacherDetail = newdetail;
+          return r;
+        }
+      });
+      updatedResults = await Promise.all(updatedResults);
+      let x = updatedResults;
+      updatedResults = [];
       x.map(r => {
         if (r) {
           updatedResults.push(r);

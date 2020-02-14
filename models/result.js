@@ -33,6 +33,21 @@ const resultSchema = new Schema({
       },
       response: {
         type: Number
+      },
+      sa: {
+        type: Number
+      },
+      a: {
+        type: Number
+      },
+      n: {
+        type: Number
+      },
+      d: {
+        type: Number
+      },
+      sd: {
+        type: Number
       }
     }
   ],
@@ -42,6 +57,21 @@ const resultSchema = new Schema({
         type: String
       },
       response: {
+        type: Number
+      },
+      sa: {
+        type: Number
+      },
+      a: {
+        type: Number
+      },
+      n: {
+        type: Number
+      },
+      d: {
+        type: Number
+      },
+      sd: {
         type: Number
       }
     }
