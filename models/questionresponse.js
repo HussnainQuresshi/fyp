@@ -4,35 +4,37 @@ const Schema = mongoose.Schema;
 const questionResponseSchema = new Schema({
   courseId: {
     type: String,
-    required: true
+    required: true,
   },
   userId: {
     type: String,
-    required: true
+    required: true,
   },
   departmentId: {
     type: String,
-    required: true
+    required: true,
   },
   semesterId: {
     type: String,
-    required: true
+    required: true,
   },
   teacherId: { type: String, required: true },
   batch: {
     type: String,
-    required: true
+    lowercase: true,
+    required: true,
   },
   answer: [
     {
       questionId: {
-        type: String
+        type: String,
       },
       response: {
-        type: String
-      }
-    }
-  ]
+        type: String,
+        lowercase: true,
+      },
+    },
+  ],
 });
 const QuestionResponse = mongoose.model(
   "questionresponse",

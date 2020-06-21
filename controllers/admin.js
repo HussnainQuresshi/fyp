@@ -10,13 +10,13 @@ const AssignCourse = require("../models/assignCourse");
 const Result = require("../models/result");
 const { JWT_SECRET } = require("../configuration");
 
-signToken = user => {
+signToken = (user) => {
   return JWT.sign(
     {
       iss: "Dev_uh",
       sub: user.id,
       iat: new Date().getTime(), // current time
-      exp: new Date().setDate(new Date().getDate() + 1) // current time + 1 day ahead
+      exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
     },
     JWT_SECRET
   );
@@ -31,7 +31,7 @@ module.exports = {
       const newAdmin = new Admin({
         username: username,
         email: email,
-        password: password
+        password: password,
       });
       await newAdmin.save();
       res.status(200).json({ success: true });
@@ -44,17 +44,18 @@ module.exports = {
 
     const token = signToken(req.user);
     res.cookie("access_token", token, {
-      httpOnly: true
+      httpOnly: true,
     });
     res.status(200).json({ success: true, token: token, userdetail: req.user });
   },
   userSignIn: async (req, res, next) => {
     // Generate token
+
     let user = await User.findOne({ token: req.body.token });
     if (user) {
       const token = signToken(user);
       res.cookie("access_token", token, {
-        httpOnly: true
+        httpOnly: true,
       });
       return res
         .status(200)
@@ -66,7 +67,7 @@ module.exports = {
   adminProfile: (req, res, next) => {
     res.status(200).json({
       success: true,
-      data: req.user
+      data: req.user,
     });
   },
   adminUpdate: async (req, res, next) => {
@@ -79,7 +80,7 @@ module.exports = {
     res.status(200).json({
       success: true,
       data: result,
-      password: req.body.password
+      password: req.body.password,
     });
   },
   addDepartment: async (req, res, next) => {
@@ -91,13 +92,13 @@ module.exports = {
       return res.status(403).json({ message: "department already exist" });
     } else {
       const newDepartment = new Department({
-        name: name
+        name: name,
       });
 
       await newDepartment.save();
     }
     res.status(200).json({
-      success: true
+      success: true,
     });
   },
   getDepartment: async (req, res, next) => {
@@ -105,16 +106,16 @@ module.exports = {
 
     return res.status(200).json({
       success: true,
-      departments: departments
+      departments: departments,
     });
   },
   deleteDepartment: async (req, res, next) => {
     const del_data = await Department.deleteOne({
-      _id: req.body.del_id
+      _id: req.body.del_id,
     });
 
     const del_assign_course = await AssignCourse.remove({
-      departmentId: req.body.del_id
+      departmentId: req.body.del_id,
     });
     return res.status(200).json({ success: true });
   },
@@ -126,13 +127,13 @@ module.exports = {
       return res.status(403).json({ message: "teacher already exist" });
     } else {
       const newTeacher = new Teacher({
-        name: name
+        name: name,
       });
 
       await newTeacher.save();
     }
     return res.status(200).json({
-      success: true
+      success: true,
     });
   },
   getTeacher: async (req, res, next) => {
@@ -140,15 +141,15 @@ module.exports = {
 
     return res.status(200).json({
       success: true,
-      teachers: teachers
+      teachers: teachers,
     });
   },
   deleteTeacher: async (req, res, next) => {
     const del_data = await Teacher.deleteOne({
-      _id: req.body.del_id
+      _id: req.body.del_id,
     });
     const del_assign_course = await AssignCourse.remove({
-      teacherId: req.body.del_id
+      teacherId: req.body.del_id,
     });
     return res.status(200).json({ success: true });
   },
@@ -160,13 +161,13 @@ module.exports = {
       return res.status(403).json({ message: "semester already exist" });
     } else {
       const newSemester = new Semester({
-        name: name
+        name: name,
       });
 
       await newSemester.save();
     }
     return res.status(200).json({
-      success: true
+      success: true,
     });
   },
   getSemester: async (req, res, next) => {
@@ -174,13 +175,13 @@ module.exports = {
 
     return res.status(200).json({
       success: true,
-      semesters: semesters
+      semesters: semesters,
     });
   },
   deleteSemester: async (req, res, next) => {
     const del_data = await Semester.deleteOne({ _id: req.body.del_id });
     const del_assign_course = await AssignCourse.remove({
-      semesterId: req.body.del_id
+      semesterId: req.body.del_id,
     });
     return res.status(200).json({ success: true });
   },
@@ -192,13 +193,13 @@ module.exports = {
       return res.status(403).json({ message: "course already exist" });
     } else {
       const newCourse = new Course({
-        name: name
+        name: name,
       });
 
       await newCourse.save();
     }
     return res.status(200).json({
-      success: true
+      success: true,
     });
   },
   getCourse: async (req, res, next) => {
@@ -206,13 +207,13 @@ module.exports = {
 
     return res.status(200).json({
       success: true,
-      courses: courses
+      courses: courses,
     });
   },
   deleteCourse: async (req, res, next) => {
     const del_data = await Course.deleteOne({ _id: req.body.del_id });
     const del_assign_course = await AssignCourse.remove({
-      courseId: req.body.del_id
+      courseId: req.body.del_id,
     });
     return res.status(200).json({ success: true });
   },
@@ -234,7 +235,7 @@ module.exports = {
       const foundAssignCourse = await AssignCourse.findOne().and([
         { courseId: courseId },
         { semesterId: semesterId },
-        { departmentId: departmentId }
+        { departmentId: departmentId },
       ]);
       if (foundAssignCourse) {
         return res.status(403).json({ message: "course already assigned.." });
@@ -243,26 +244,26 @@ module.exports = {
           courseId: courseId,
           teacherId: teacherId,
           departmentId: departmentId,
-          semesterId: semesterId
+          semesterId: semesterId,
         });
 
         await newCourse.save();
 
         return res.status(200).json({
-          success: true
+          success: true,
         });
       }
     }
   },
   getAssignCourse: async (req, res, next) => {
     const assignCourses = await AssignCourse.find();
-    let updatedAssignCourses = assignCourses.map(async assignCourse => {
+    let updatedAssignCourses = assignCourses.map(async (assignCourse) => {
       const teacher = await Teacher.findOne({ _id: assignCourse.teacherId });
       assignCourse.teacherId = teacher.name;
       const semester = await Semester.findOne({ _id: assignCourse.semesterId });
       assignCourse.semesterId = semester.name;
       const department = await Department.findOne({
-        _id: assignCourse.departmentId
+        _id: assignCourse.departmentId,
       });
       assignCourse.departmentId = department.name;
       const course = await Course.findOne({ _id: assignCourse.courseId });
@@ -274,7 +275,7 @@ module.exports = {
     return res.status(200).json({
       success: true,
       data: updatedAssignCourses,
-      teachers: teachers
+      teachers: teachers,
     });
   },
   deleteAssignCourse: async (req, res, next) => {
@@ -290,21 +291,19 @@ module.exports = {
     } else {
       const newQuestion = new Question({
         name: name,
-        type: type
+        type: type,
       });
 
       await newQuestion.save();
     }
     return res.status(200).json({
-      success: true
+      success: true,
     });
   },
   editQuestion: async (req, res, next) => {
     const { id, name, type } = req.body;
-    console.log("ir a geya function k indr", { id, name, type });
     let foundQuestion = await Question.findById(id);
     if (foundQuestion) {
-      console.log("found question ya a", foundQuestion);
       foundQuestion.name = name;
       foundQuestion.type = type;
       await foundQuestion.save();
@@ -312,7 +311,7 @@ module.exports = {
       return res.status(403).json({ message: "question already exist" });
     }
     return res.status(200).json({
-      success: true
+      success: true,
     });
   },
   getQuestion: async (req, res, next) => {
@@ -320,7 +319,7 @@ module.exports = {
 
     return res.status(200).json({
       success: true,
-      questions: questions
+      questions: questions,
     });
   },
   deleteQuestion: async (req, res, next) => {
@@ -332,9 +331,7 @@ module.exports = {
     let { noOfToken, departmentId, semesterId, batch } = req.value.body;
 
     while (noOfToken > 0 && batch > 0) {
-      let token = Math.random()
-        .toString(36)
-        .substr(2, 10);
+      let token = Math.random().toString(36).substr(2, 10);
       let foundUser = await User.findOne({ token: token });
       if (!foundUser) {
         //repetition say bachnay ka lia
@@ -342,7 +339,7 @@ module.exports = {
           token: token,
           semesterId: semesterId,
           departmentId: departmentId,
-          batch: batch
+          batch: batch,
         });
 
         await newUser.save();
@@ -353,11 +350,11 @@ module.exports = {
   },
   getUser: async (req, res, next) => {
     const users = await User.find({ departmentId: req.body.depId });
-    let updatedUsers = users.map(async user => {
+    let updatedUsers = users.map(async (user) => {
       const semester = await Semester.findOne({ _id: user.semesterId });
       user.semesterId = semester.name;
       const department = await Department.findOne({
-        _id: user.departmentId
+        _id: user.departmentId,
       });
       user.departmentId = department.name;
 
@@ -366,7 +363,7 @@ module.exports = {
     updatedUsers = await Promise.all(updatedUsers);
     return res.status(200).json({
       success: true,
-      tokens: updatedUsers
+      tokens: updatedUsers,
     });
   },
   addResult: async (req, res, next) => {
@@ -393,15 +390,15 @@ module.exports = {
         { teacherId: foundTeacher._id },
         { departmentId: departmentId },
         { semesterId: semesterId },
-        { batch: batch }
+        { batch: batch },
       ]);
       if (foundResult) {
         let teacherDetail = [];
         let courseDetail = [];
         let NewCourseDetails = [];
         let NewTeacherDetails = [];
-        question.map(ques => {
-          if (ques.type === "Course") {
+        question.map((ques) => {
+          if (ques.type == "course") {
             courseDetail.push(ques);
           } else {
             teacherDetail.push(ques);
@@ -419,7 +416,7 @@ module.exports = {
                 a: q.a,
                 n: q.n,
                 d: q.d,
-                sd: q.sd + 1
+                sd: q.sd + 1,
               });
               break;
             case 2:
@@ -430,7 +427,7 @@ module.exports = {
                 a: q.a,
                 n: q.n,
                 d: q.d + 1,
-                sd: q.sd
+                sd: q.sd,
               });
               break;
             case 3:
@@ -441,7 +438,7 @@ module.exports = {
                 a: q.a,
                 n: q.n + 1,
                 d: q.d,
-                sd: q.sd
+                sd: q.sd,
               });
               break;
             case 4:
@@ -452,7 +449,7 @@ module.exports = {
                 a: q.a + 1,
                 n: q.n,
                 d: q.d,
-                sd: q.sd
+                sd: q.sd,
               });
               break;
             case 5:
@@ -463,11 +460,12 @@ module.exports = {
                 a: q.a,
                 n: q.n,
                 d: q.d,
-                sd: q.sd
+                sd: q.sd,
               });
               break;
           }
         });
+
         foundResult.teacherDetail.map((q, i) => {
           let ques = q.response + teacherDetail[i].response;
           ques = ques / 2;
@@ -480,7 +478,7 @@ module.exports = {
                 a: q.a,
                 n: q.n,
                 d: q.d,
-                sd: q.sd + 1
+                sd: q.sd + 1,
               });
               break;
             case 2:
@@ -491,7 +489,7 @@ module.exports = {
                 a: q.a,
                 n: q.n,
                 d: q.d + 1,
-                sd: q.sd
+                sd: q.sd,
               });
               break;
             case 3:
@@ -502,7 +500,7 @@ module.exports = {
                 a: q.a,
                 n: q.n + 1,
                 d: q.d,
-                sd: q.sd
+                sd: q.sd,
               });
               break;
             case 4:
@@ -513,7 +511,7 @@ module.exports = {
                 a: q.a + 1,
                 n: q.n,
                 d: q.d,
-                sd: q.sd
+                sd: q.sd,
               });
               break;
             case 5:
@@ -524,7 +522,7 @@ module.exports = {
                 a: q.a,
                 n: q.n,
                 d: q.d,
-                sd: q.sd
+                sd: q.sd,
               });
               break;
           }
@@ -534,7 +532,6 @@ module.exports = {
         foundResult.teacherDetail = NewTeacherDetails;
 
         foundResult.totalstudents = foundResult.totalstudents + 1;
-        console.log(foundResult);
         await foundResult.save();
 
         const user = await User.findById({ _id: _id });
@@ -544,13 +541,13 @@ module.exports = {
         await user.save();
 
         return res.status(200).json({
-          success: true
+          success: true,
         });
       } else {
         let teacherDetail = [];
         let courseDetail = [];
-        question.map(ques => {
-          if (ques.type === "Course") {
+        question.map((ques) => {
+          if (ques.type === "course") {
             switch (ques.response) {
               case 1:
                 courseDetail.push({
@@ -560,7 +557,7 @@ module.exports = {
                   a: 0,
                   n: 0,
                   d: 0,
-                  sd: 1
+                  sd: 1,
                 });
                 break;
               case 2:
@@ -571,7 +568,7 @@ module.exports = {
                   a: 0,
                   n: 0,
                   d: 1,
-                  sd: 0
+                  sd: 0,
                 });
                 break;
               case 3:
@@ -582,7 +579,7 @@ module.exports = {
                   a: 0,
                   n: 1,
                   d: 0,
-                  sd: 0
+                  sd: 0,
                 });
                 break;
               case 4:
@@ -593,7 +590,7 @@ module.exports = {
                   a: 1,
                   n: 0,
                   d: 0,
-                  sd: 0
+                  sd: 0,
                 });
                 break;
               case 5:
@@ -604,7 +601,7 @@ module.exports = {
                   a: 0,
                   n: 0,
                   d: 0,
-                  sd: 0
+                  sd: 0,
                 });
                 break;
             }
@@ -618,7 +615,7 @@ module.exports = {
                   a: 0,
                   n: 0,
                   d: 0,
-                  sd: 1
+                  sd: 1,
                 });
                 break;
               case 2:
@@ -629,7 +626,7 @@ module.exports = {
                   a: 0,
                   n: 0,
                   d: 1,
-                  sd: 0
+                  sd: 0,
                 });
                 break;
               case 3:
@@ -640,7 +637,7 @@ module.exports = {
                   a: 0,
                   n: 1,
                   d: 0,
-                  sd: 0
+                  sd: 0,
                 });
                 break;
               case 4:
@@ -651,7 +648,7 @@ module.exports = {
                   a: 1,
                   n: 0,
                   d: 0,
-                  sd: 0
+                  sd: 0,
                 });
                 break;
               case 5:
@@ -662,7 +659,7 @@ module.exports = {
                   a: 0,
                   n: 0,
                   d: 0,
-                  sd: 0
+                  sd: 0,
                 });
                 break;
             }
@@ -676,14 +673,14 @@ module.exports = {
           batch: batch,
           courseDetail: courseDetail,
           teacherDetail: teacherDetail,
-          totalstudents: 1
+          totalstudents: 1,
         });
         await newResult.save();
         const user = await User.findById({ _id: _id });
         user.evaluation.push(courseId);
         await user.save();
         return res.status(200).json({
-          success: true
+          success: true,
         });
       }
     }
@@ -694,15 +691,15 @@ module.exports = {
     const results = await Result.find().and([
       { departmentId: department },
       { semesterId: semester },
-      { batch: batch }
+      { batch: batch },
     ]);
     if (results) {
-      let updatedResults = results.map(async r => {
+      let updatedResults = results.map(async (r) => {
         let foundCourse = await Course.findOne({ _id: r.courseId });
         let foundTeacher = await Teacher.findOne({ _id: r.teacherId });
         let foundSemester = await Semester.findOne({ _id: r.semesterId });
         let foundDepartment = await Department.findOne({
-          _id: r.departmentId
+          _id: r.departmentId,
         });
         if (foundSemester && foundTeacher && foundDepartment && foundCourse) {
           r.teacherId = foundTeacher.name;
@@ -716,7 +713,7 @@ module.exports = {
       let x = updatedResults;
       updatedResults = [];
 
-      x.map(r => {
+      x.map((r) => {
         if (r) {
           updatedResults.push(r);
         }
@@ -724,19 +721,21 @@ module.exports = {
 
       return res.status(200).json({
         success: true,
-        updatedResults
+        updatedResults,
       });
     }
   },
+
   getResult: async (req, res, next) => {
     const results = await Result.find();
+
     if (results) {
-      let updatedResults = results.map(async r => {
+      let updatedResults = results.map(async (r) => {
         let foundCourse = await Course.findOne({ _id: r.courseId });
         let foundTeacher = await Teacher.findOne({ _id: r.teacherId });
         let foundSemester = await Semester.findOne({ _id: r.semesterId });
         let foundDepartment = await Department.findOne({
-          _id: r.departmentId
+          _id: r.departmentId,
         });
         if (foundSemester && foundTeacher && foundDepartment && foundCourse) {
           r.teacherId = foundTeacher.name;
@@ -745,27 +744,32 @@ module.exports = {
           r.courseId = foundCourse.name;
 
           let newdetail = [];
-          newdetail = r.courseDetail.map(async t => {
+
+          newdetail = r.courseDetail.map(async (t) => {
             let x = await Question.findOne({ _id: t.questionId });
             t.questionId = x.name;
             return t;
           });
           newdetail = await Promise.all(newdetail);
           r.courseDetail = newdetail;
-          newdetail = r.teacherDetail.map(async t => {
+
+          newdetail = r.teacherDetail.map(async (t) => {
             let x = await Question.findOne({ _id: t.questionId });
             t.questionId = x.name;
             return t;
           });
+
           newdetail = await Promise.all(newdetail);
           r.teacherDetail = newdetail;
           return r;
         }
       });
+
       updatedResults = await Promise.all(updatedResults);
+
       let x = updatedResults;
       updatedResults = [];
-      x.map(r => {
+      x.map((r) => {
         if (r) {
           updatedResults.push(r);
         }
@@ -773,7 +777,7 @@ module.exports = {
 
       return res.status(200).json({
         success: true,
-        updatedResults
+        updatedResults,
       });
     }
   },
@@ -793,17 +797,17 @@ module.exports = {
       course: course,
       department: department,
       teacher: teacher,
-      semester: semester
+      semester: semester,
     });
   },
   getStudentData: async (req, res, next) => {
     let data = await AssignCourse.find().and([
       { departmentId: req.user.departmentId },
-      { semesterId: req.user.semesterId }
+      { semesterId: req.user.semesterId },
     ]);
     let question = await Question.find();
 
-    let copy = data.map(async v => {
+    let copy = data.map(async (v) => {
       const course = await Course.findOne({ _id: v.courseId });
       const department = await Department.findOne({ _id: v.departmentId });
       const semester = await Semester.findOne({ _id: v.semesterId });
@@ -815,13 +819,13 @@ module.exports = {
         teacherId: teacher.name,
         departmentId: department.name,
         semesterId: semester.name,
-        batch: req.user.batch
+        batch: req.user.batch,
       };
     });
     copy = await Promise.all(copy);
     const user = await User.findById({ _id: req.user._id });
 
-    user.evaluation.map(v => {
+    user.evaluation.map((v) => {
       let i = 0;
       while (i < copy.length) {
         if (copy[i].courseIdn == v) {
@@ -842,5 +846,133 @@ module.exports = {
   signOut: (req, res, next) => {
     res.clearCookie("access_token");
     res.json({ success: true });
-  }
+  },
+  semestercoursechunk: async (req, res, next) => {
+    try {
+      const { courseChunk, semesterChunk } = req.body;
+      let courses = [];
+      let semesters = [];
+      if (courseChunk.length > 1)
+        for (let i = 1; i < courseChunk.length - 1; i++) {
+          let found = await Course.findOne({
+            name: courseChunk[i].data[0],
+          });
+          if (!found) courses.push({ name: courseChunk[i].data[0] });
+        }
+      if (semesterChunk.length > 1)
+        for (let i = 1; i < semesterChunk.length - 1; i++) {
+          let found = await Semester.findOne({
+            name: semesterChunk[i].data[0],
+          });
+          if (!found) semesters.push({ name: semesterChunk[i].data[0] });
+        }
+      if (semesters.length > 0) {
+        await Semester.insertMany(semesters);
+      }
+      if (courses.length > 0) {
+        await Course.insertMany(courses);
+      }
+      if (!courses.length > 0 && !semesters.length > 0) {
+        return res.status(400).json({
+          error: "something went wrong",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+      });
+    } catch (er) {
+      return res.status(400).json({
+        error: "something went wrong",
+      });
+    }
+  },
+  teacherchunk: async (req, res, next) => {
+    try {
+      const { teacherChunk } = req.body;
+      let teachers = [];
+      if (teacherChunk.length > 1)
+        for (let i = 1; i < teacherChunk.length - 1; i++) {
+          let found = await Teacher.findOne({
+            name: teacherChunk[i].data[0],
+          });
+          if (!found) teachers.push({ name: teacherChunk[i].data[0] });
+        }
+      if (teachers.length > 0) {
+        await Teacher.insertMany(teachers);
+      } else {
+        return res.status(400).json({
+          error: "something went wrong",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+      });
+    } catch (er) {
+      return res.status(400).json({
+        error: "something went wrong",
+      });
+    }
+  },
+  departmentchunk: async (req, res, next) => {
+    try {
+      const { departmentChunk } = req.body;
+      let departments = [];
+      if (departmentChunk.length > 1)
+        for (let i = 1; i < departmentChunk.length - 1; i++) {
+          let found = await Department.findOne({
+            name: departmentChunk[i].data[0],
+          });
+          if (!found) departments.push({ name: departmentChunk[i].data[0] });
+        }
+      if (departments.length > 0) {
+        await Department.insertMany(departments);
+      } else {
+        return res.status(400).json({
+          error: "something went wrong",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+      });
+    } catch (er) {
+      return res.status(400).json({
+        error: "something went wrong",
+      });
+    }
+  },
+  questionchunk: async (req, res, next) => {
+    try {
+      const { questionChunk } = req.body;
+      let questions = [];
+      if (questionChunk.length > 1)
+        for (let i = 1; i < questionChunk.length - 1; i++) {
+          let found = await Question.findOne({
+            name: questionChunk[i].data[0],
+          });
+          if (!found)
+            questions.push({
+              name: questionChunk[i].data[0],
+              type: questionChunk[i].data[1],
+            });
+        }
+      if (questions.length > 0) {
+        await Question.insertMany(questions);
+      } else {
+        return res.status(400).json({
+          error: "something went wrong",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+      });
+    } catch (er) {
+      return res.status(400).json({
+        error: "something went wrong",
+      });
+    }
+  },
 };

@@ -1,4 +1,5 @@
 const passport = require("passport");
+
 const JwtStrategy = require("passport-jwt").Strategy;
 const { ExtractJwt } = require("passport-jwt");
 const LocalStrategy = require("passport-local").Strategy;
@@ -6,7 +7,7 @@ const config = require("./configuration");
 const Admin = require("./models/admin");
 const User = require("./models/user");
 
-const cookieExtractor = req => {
+const cookieExtractor = (req) => {
   let token = null;
 
   if (req && req.cookies) {
@@ -23,7 +24,7 @@ passport.use(
     {
       jwtFromRequest: cookieExtractor,
       secretOrKey: config.JWT_SECRET,
-      passReqToCallback: true
+      passReqToCallback: true,
     },
     async (req, payload, done) => {
       try {
@@ -53,7 +54,7 @@ passport.use(
     {
       jwtFromRequest: cookieExtractor,
       secretOrKey: config.JWT_SECRET,
-      passReqToCallback: true
+      passReqToCallback: true,
     },
     async (req, payload, done) => {
       try {
@@ -78,9 +79,10 @@ passport.use(
 
 // LOCAL STRATEGY
 passport.use(
+  "local",
   new LocalStrategy(
     {
-      usernameField: "email"
+      usernameField: "email",
     },
     async (email, password, done) => {
       try {

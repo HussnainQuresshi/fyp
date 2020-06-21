@@ -5,21 +5,22 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   token: {
     type: String,
-    required: true
+    required: true,
   },
   departmentId: {
     type: String,
-    required: true
+    required: true,
   },
   semesterId: {
     type: String,
-    required: true
+    required: true,
   },
   batch: {
     type: String,
-    required: true
+    lowercase: true,
+    required: true,
   },
-  evaluation: [String]
+  evaluation: [String],
 });
 
 // Create a model

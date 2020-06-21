@@ -1,12 +1,13 @@
-const express = require("express");
+require("express");
 const router = require("express-promise-router")();
 const passport = require("passport");
-const passportConf = require("../passport");
+require("../passport");
 const { validateBody, schemas } = require("../helpers/routeHelpers");
 const Controller = require("../controllers/admin");
 const passportAdminSignIn = passport.authenticate("local", { session: false });
 const passportJWT = passport.authenticate("ADMIN", { session: false });
 const passportJWT2 = passport.authenticate("USER", { session: false });
+const Auth = require("../middleware/auth");
 router
   .route("/adminsignup")
   .post(validateBody(schemas.adminSignUpSchema), Controller.adminSignUp);
@@ -82,10 +83,17 @@ router.route("/getuser").post(passportJWT, Controller.getUser);
 router.route("/result").post(passportJWT2, Controller.addResult);
 router.route("/dashboard").post(passportJWT, Controller.dashboard);
 router.route("/result").get(passportJWT, Controller.getResult);
-router.route("/isauth").get(passportJWT, Controller.isAuth);
-router.route("/isauthuser").get(passportJWT2, Controller.isAuthUser);
+router.route("/isauth").get(Auth, Controller.isAuth);
+router.route("/isauthuser").get(Auth, Controller.isAuthUser);
 router.route("/getall").get(passportJWT, Controller.getAll);
 router.route("/getstudentdata").get(passportJWT2, Controller.getStudentData);
 router.route("/signout").get(passportJWT, Controller.signOut);
 router.route("/usersignout").get(passportJWT2, Controller.signOutUser);
+router
+  .route("/semester_course_chunk")
+  .post(passportJWT, Controller.semestercoursechunk);
+router.route("/teacher_chunk").post(passportJWT, Controller.teacherchunk);
+router.route("/department_chunk").post(passportJWT, Controller.departmentchunk);
+router.route("/questions_chunk").post(passportJWT, Controller.questionchunk);
+
 module.exports = router;

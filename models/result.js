@@ -4,78 +4,79 @@ const Schema = mongoose.Schema;
 const resultSchema = new Schema({
   courseId: {
     type: String,
-    required: true
+    required: true,
   },
   teacherId: {
     type: String,
-    required: true
+    required: true,
   },
   departmentId: {
     type: String,
-    required: true
+    required: true,
   },
   semesterId: {
     type: String,
-    required: true
+    required: true,
   },
   batch: {
     type: String,
-    required: true
+    lowercase: true,
+    required: true,
   },
   totalstudents: {
     type: Number,
-    required: true
+    required: true,
   },
   courseDetail: [
     {
       questionId: {
-        type: String
+        type: String,
       },
       response: {
-        type: Number
+        type: Number,
       },
       sa: {
-        type: Number
+        type: Number,
       },
       a: {
-        type: Number
+        type: Number,
       },
       n: {
-        type: Number
+        type: Number,
       },
       d: {
-        type: Number
+        type: Number,
       },
       sd: {
-        type: Number
-      }
-    }
+        type: Number,
+      },
+    },
   ],
   teacherDetail: [
     {
       questionId: {
-        type: String
+        type: String,
       },
       response: {
-        type: Number
+        type: Number,
       },
       sa: {
-        type: Number
+        type: Number,
       },
       a: {
-        type: Number
+        type: Number,
       },
       n: {
-        type: Number
+        type: Number,
       },
       d: {
-        type: Number
+        type: Number,
       },
       sd: {
-        type: Number
-      }
-    }
-  ]
+        type: Number,
+      },
+    },
+  ],
 });
 const Result = mongoose.model("result", resultSchema);
 
