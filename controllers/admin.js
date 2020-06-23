@@ -9,7 +9,7 @@ const Question = require("../models/question");
 const User = require("../models/user");
 const AssignCourse = require("../models/assignCourse");
 const Result = require("../models/result");
-const { jwtSecret } = require("../config/index");
+const { jwtSecret } = require("../configuration/index");
 
 signToken = (user) => {
   return JWT.sign(

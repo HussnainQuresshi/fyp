@@ -1,6 +1,6 @@
 const winston = require("winston");
 const mongoose = require("mongoose");
-const db = require("../config/index");
+const db = require("../configuration/index");
 mongoose.Promise = global.Promise;
 
 module.exports = function () {
