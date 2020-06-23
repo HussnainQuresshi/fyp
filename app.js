@@ -1,19 +1,17 @@
+require("express-async-errors");
 const express = require("express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
+const path = require("path");
+const winston = require("winston");
 const app = express();
 
-app.set("trust proxy", 1);
-app.use(cookieParser());
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      return callback(null, true);
-    },
-    exposedHeaders: ["Content-Length", "X-Foo", "X-Bar"],
-    credentials: true,
-  })
-);
+require("./Startup/db")();
+require("./Startup/errorhandler")(app);
 app.use(express.json());
 app.use("/users", require("./routes/users"));
-module.exports = app;
+app.use(express.static(path.join(__dirname, "Client/build")));
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname, "Client/build", "index.html"));
+});
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => winston.info(`Listening on port ${port}`));

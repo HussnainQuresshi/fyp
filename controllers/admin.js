@@ -1,4 +1,5 @@
 const JWT = require("jsonwebtoken");
+const tryCatch = require("../middleware/trycatch");
 const Admin = require("../models/admin");
 const Department = require("../models/department");
 const Teacher = require("../models/teacher");
@@ -8,22 +9,22 @@ const Question = require("../models/question");
 const User = require("../models/user");
 const AssignCourse = require("../models/assignCourse");
 const Result = require("../models/result");
-const { JWT_SECRET } = require("../configuration");
+const { jwtSecret } = require("../config/index");
 
 signToken = (user) => {
   return JWT.sign(
     {
-      iss: "Dev_uh",
+      iss: jwtSecret,
       sub: user.id,
       iat: new Date().getTime(), // current time
       exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
     },
-    JWT_SECRET
+    jwtSecret
   );
 };
 
 module.exports = {
-  adminSignUp: async (req, res, next) => {
+  adminSignUp: tryCatch(async (req, res, next) => {
     let check = await Admin.find();
 
     if (check.length == 0) {
@@ -37,9 +38,9 @@ module.exports = {
       res.status(200).json({ success: true });
     }
     return res.status(403).json({ message: "account already exist" });
-  },
+  }),
 
-  adminSignIn: (req, res, next) => {
+  adminSignIn: tryCatch((req, res, next) => {
     // Generate token
 
     const token = signToken(req.user);
@@ -47,8 +48,8 @@ module.exports = {
       httpOnly: true,
     });
     res.status(200).json({ success: true, token: token, userdetail: req.user });
-  },
-  userSignIn: async (req, res, next) => {
+  }),
+  userSignIn: tryCatch(async (req, res, next) => {
     // Generate token
 
     let user = await User.findOne({ token: req.body.token });
@@ -62,15 +63,15 @@ module.exports = {
         .json({ success: true, token: token, userdetail: user });
     }
     res.status(403).json({ message: "Token Not Found" });
-  },
+  }),
 
-  adminProfile: (req, res, next) => {
+  adminProfile: tryCatch((req, res, next) => {
     res.status(200).json({
       success: true,
       data: req.user,
     });
-  },
-  adminUpdate: async (req, res, next) => {
+  }),
+  adminUpdate: tryCatch(async (req, res, next) => {
     const data = await Admin.findById(req.user._id);
 
     data.username = req.body.username;
@@ -82,8 +83,8 @@ module.exports = {
       data: result,
       password: req.body.password,
     });
-  },
-  addDepartment: async (req, res, next) => {
+  }),
+  addDepartment: tryCatch(async (req, res, next) => {
     const { name } = req.value.body;
 
     let foundDepartment = await Department.findOne({ name: name });
@@ -100,16 +101,16 @@ module.exports = {
     res.status(200).json({
       success: true,
     });
-  },
-  getDepartment: async (req, res, next) => {
+  }),
+  getDepartment: tryCatch(async (req, res, next) => {
     const departments = await Department.find();
 
     return res.status(200).json({
       success: true,
       departments: departments,
     });
-  },
-  deleteDepartment: async (req, res, next) => {
+  }),
+  deleteDepartment: tryCatch(async (req, res, next) => {
     const del_data = await Department.deleteOne({
       _id: req.body.del_id,
     });
@@ -118,8 +119,8 @@ module.exports = {
       departmentId: req.body.del_id,
     });
     return res.status(200).json({ success: true });
-  },
-  addTeacher: async (req, res, next) => {
+  }),
+  addTeacher: tryCatch(async (req, res, next) => {
     const { name } = req.value.body;
     let foundTeacher = await Teacher.findOne({ name: name });
 
@@ -135,16 +136,16 @@ module.exports = {
     return res.status(200).json({
       success: true,
     });
-  },
-  getTeacher: async (req, res, next) => {
+  }),
+  getTeacher: tryCatch(async (req, res, next) => {
     const teachers = await Teacher.find();
 
     return res.status(200).json({
       success: true,
       teachers: teachers,
     });
-  },
-  deleteTeacher: async (req, res, next) => {
+  }),
+  deleteTeacher: tryCatch(async (req, res, next) => {
     const del_data = await Teacher.deleteOne({
       _id: req.body.del_id,
     });
@@ -152,8 +153,8 @@ module.exports = {
       teacherId: req.body.del_id,
     });
     return res.status(200).json({ success: true });
-  },
-  addSemester: async (req, res, next) => {
+  }),
+  addSemester: tryCatch(async (req, res, next) => {
     const { name } = req.value.body;
     let foundSemester = await Semester.findOne({ name: name });
 
@@ -169,23 +170,23 @@ module.exports = {
     return res.status(200).json({
       success: true,
     });
-  },
-  getSemester: async (req, res, next) => {
+  }),
+  getSemester: tryCatch(async (req, res, next) => {
     const semesters = await Semester.find();
 
     return res.status(200).json({
       success: true,
       semesters: semesters,
     });
-  },
-  deleteSemester: async (req, res, next) => {
+  }),
+  deleteSemester: tryCatch(async (req, res, next) => {
     const del_data = await Semester.deleteOne({ _id: req.body.del_id });
     const del_assign_course = await AssignCourse.remove({
       semesterId: req.body.del_id,
     });
     return res.status(200).json({ success: true });
-  },
-  addCourse: async (req, res, next) => {
+  }),
+  addCourse: tryCatch(async (req, res, next) => {
     const { name } = req.value.body;
     let foundCourse = await Course.findOne({ name: name });
 
@@ -201,23 +202,23 @@ module.exports = {
     return res.status(200).json({
       success: true,
     });
-  },
-  getCourse: async (req, res, next) => {
+  }),
+  getCourse: tryCatch(async (req, res, next) => {
     const courses = await Course.find();
 
     return res.status(200).json({
       success: true,
       courses: courses,
     });
-  },
-  deleteCourse: async (req, res, next) => {
+  }),
+  deleteCourse: tryCatch(async (req, res, next) => {
     const del_data = await Course.deleteOne({ _id: req.body.del_id });
     const del_assign_course = await AssignCourse.remove({
       courseId: req.body.del_id,
     });
     return res.status(200).json({ success: true });
-  },
-  addAssignCourse: async (req, res, next) => {
+  }),
+  addAssignCourse: tryCatch(async (req, res, next) => {
     const { courseId, semesterId, departmentId, teacherId } = req.value.body;
     let foundCourse = await Course.findOne({ _id: courseId });
     let foundSemester = await Semester.findOne({ _id: semesterId });
@@ -254,8 +255,8 @@ module.exports = {
         });
       }
     }
-  },
-  getAssignCourse: async (req, res, next) => {
+  }),
+  getAssignCourse: tryCatch(async (req, res, next) => {
     const assignCourses = await AssignCourse.find();
     let updatedAssignCourses = assignCourses.map(async (assignCourse) => {
       const teacher = await Teacher.findOne({ _id: assignCourse.teacherId });
@@ -277,12 +278,12 @@ module.exports = {
       data: updatedAssignCourses,
       teachers: teachers,
     });
-  },
-  deleteAssignCourse: async (req, res, next) => {
+  }),
+  deleteAssignCourse: tryCatch(async (req, res, next) => {
     const del_data = await AssignCourse.deleteOne({ _id: req.body.del_id });
     return res.status(200).json({ success: true });
-  },
-  addQuestion: async (req, res, next) => {
+  }),
+  addQuestion: tryCatch(async (req, res, next) => {
     const { name, type } = req.value.body;
     let foundQuestion = await Question.findOne({ name: name });
 
@@ -299,8 +300,8 @@ module.exports = {
     return res.status(200).json({
       success: true,
     });
-  },
-  editQuestion: async (req, res, next) => {
+  }),
+  editQuestion: tryCatch(async (req, res, next) => {
     const { id, name, type } = req.body;
     let foundQuestion = await Question.findById(id);
     if (foundQuestion) {
@@ -313,21 +314,21 @@ module.exports = {
     return res.status(200).json({
       success: true,
     });
-  },
-  getQuestion: async (req, res, next) => {
+  }),
+  getQuestion: tryCatch(async (req, res, next) => {
     const questions = await Question.find();
 
     return res.status(200).json({
       success: true,
       questions: questions,
     });
-  },
-  deleteQuestion: async (req, res, next) => {
+  }),
+  deleteQuestion: tryCatch(async (req, res, next) => {
     const del_data = await Question.deleteOne({ _id: req.body.del_id });
 
     return res.status(200).json({ success: true });
-  },
-  addUser: async (req, res, next) => {
+  }),
+  addUser: tryCatch(async (req, res, next) => {
     let { noOfToken, departmentId, semesterId, batch } = req.value.body;
 
     while (noOfToken > 0 && batch > 0) {
@@ -347,8 +348,8 @@ module.exports = {
       }
     }
     res.status(200).json({ success: true });
-  },
-  getUser: async (req, res, next) => {
+  }),
+  getUser: tryCatch(async (req, res, next) => {
     const users = await User.find({ departmentId: req.body.depId });
     let updatedUsers = users.map(async (user) => {
       const semester = await Semester.findOne({ _id: user.semesterId });
@@ -365,8 +366,8 @@ module.exports = {
       success: true,
       tokens: updatedUsers,
     });
-  },
-  addResult: async (req, res, next) => {
+  }),
+  addResult: tryCatch(async (req, res, next) => {
     const { courseId, question, teacherId } = req.body;
     const { semesterId, batch, departmentId, _id } = req.user;
     let foundCourse = await Course.findOne({ _id: courseId });
@@ -684,8 +685,8 @@ module.exports = {
         });
       }
     }
-  },
-  dashboard: async (req, res, next) => {
+  }),
+  dashboard: tryCatch(async (req, res, next) => {
     const { department, semester, batch } = req.body;
 
     const results = await Result.find().and([
@@ -724,9 +725,9 @@ module.exports = {
         updatedResults,
       });
     }
-  },
+  }),
 
-  getResult: async (req, res, next) => {
+  getResult: tryCatch(async (req, res, next) => {
     const results = await Result.find();
 
     if (results) {
@@ -780,14 +781,14 @@ module.exports = {
         updatedResults,
       });
     }
-  },
+  }),
   isAuth: (req, res, next) => {
     res.status(200).json({ success: true });
   },
   isAuthUser: (req, res, next) => {
     res.status(200).json({ success: true });
   },
-  getAll: async (req, res, next) => {
+  getAll: tryCatch(async (req, res, next) => {
     const semester = await Semester.find();
     const department = await Department.find();
     const teacher = await Teacher.find();
@@ -799,8 +800,8 @@ module.exports = {
       teacher: teacher,
       semester: semester,
     });
-  },
-  getStudentData: async (req, res, next) => {
+  }),
+  getStudentData: tryCatch(async (req, res, next) => {
     let data = await AssignCourse.find().and([
       { departmentId: req.user.departmentId },
       { semesterId: req.user.semesterId },
@@ -837,17 +838,17 @@ module.exports = {
       }
     });
     res.status(200).json({ success: true, data: copy, Question: question });
-  },
-  signOutUser: async (req, res, next) => {
+  }),
+  signOutUser: tryCatch(async (req, res, next) => {
     await User.deleteOne({ _id: req.user._id });
     res.clearCookie("access_token");
     res.json({ success: true });
-  },
+  }),
   signOut: (req, res, next) => {
     res.clearCookie("access_token");
     res.json({ success: true });
   },
-  semestercoursechunk: async (req, res, next) => {
+  semestercoursechunk: tryCatch(async (req, res, next) => {
     try {
       const { courseChunk, semesterChunk } = req.body;
       let courses = [];
@@ -886,8 +887,8 @@ module.exports = {
         error: "something went wrong",
       });
     }
-  },
-  teacherchunk: async (req, res, next) => {
+  }),
+  teacherchunk: tryCatch(async (req, res, next) => {
     try {
       const { teacherChunk } = req.body;
       let teachers = [];
@@ -914,8 +915,8 @@ module.exports = {
         error: "something went wrong",
       });
     }
-  },
-  departmentchunk: async (req, res, next) => {
+  }),
+  departmentchunk: tryCatch(async (req, res, next) => {
     try {
       const { departmentChunk } = req.body;
       let departments = [];
@@ -942,8 +943,8 @@ module.exports = {
         error: "something went wrong",
       });
     }
-  },
-  questionchunk: async (req, res, next) => {
+  }),
+  questionchunk: tryCatch(async (req, res, next) => {
     try {
       const { questionChunk } = req.body;
       let questions = [];
@@ -974,5 +975,5 @@ module.exports = {
         error: "something went wrong",
       });
     }
-  },
+  }),
 };

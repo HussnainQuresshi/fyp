@@ -3,7 +3,7 @@ const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const { ExtractJwt } = require("passport-jwt");
 const LocalStrategy = require("passport-local").Strategy;
-const config = require("./configuration");
+const config = require("./config/index");
 const Admin = require("./models/admin");
 const User = require("./models/user");
 
@@ -23,7 +23,7 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: cookieExtractor,
-      secretOrKey: config.JWT_SECRET,
+      secretOrKey: config.jwtSecret,
       passReqToCallback: true,
     },
     async (req, payload, done) => {
@@ -53,7 +53,7 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: cookieExtractor,
-      secretOrKey: config.JWT_SECRET,
+      secretOrKey: config.jwtSecret,
       passReqToCallback: true,
     },
     async (req, payload, done) => {

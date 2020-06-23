@@ -8,6 +8,7 @@ const passportAdminSignIn = passport.authenticate("local", { session: false });
 const passportJWT = passport.authenticate("ADMIN", { session: false });
 const passportJWT2 = passport.authenticate("USER", { session: false });
 const Auth = require("../middleware/auth");
+
 router
   .route("/adminsignup")
   .post(validateBody(schemas.adminSignUpSchema), Controller.adminSignUp);

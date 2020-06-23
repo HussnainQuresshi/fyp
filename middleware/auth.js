@@ -1,5 +1,5 @@
 const Jwt = require("jsonwebtoken");
-const config = require("../configuration/index");
+const config = require("../config/index");
 module.exports = function (req, res, next) {
   const token = req.header("x-auth-token");
 
@@ -7,7 +7,7 @@ module.exports = function (req, res, next) {
     res.status(401).send("Access Denied ..No Token Provided.");
   }
   try {
-    const { sub } = Jwt.verify(token, config.JWT_SECRET);
+    const { sub } = Jwt.verify(token, config.jwtSecret);
     req.user = sub;
     next();
   } catch (error) {
