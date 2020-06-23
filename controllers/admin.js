@@ -324,8 +324,7 @@ module.exports = {
     });
   }),
   deleteQuestion: tryCatch(async (req, res, next) => {
-    const del_data = await Question.deleteOne({ _id: req.body.del_id });
-
+    await Question.deleteOne({ _id: req.body.del_id });
     return res.status(200).json({ success: true });
   }),
   addUser: tryCatch(async (req, res, next) => {
@@ -387,10 +386,10 @@ module.exports = {
       return res.status(403).json({ message: `course id doesn't  exist` });
     } else {
       const foundResult = await Result.findOne().and([
-        { courseId: courseId },
-        { teacherId: foundTeacher._id },
-        { departmentId: departmentId },
-        { semesterId: semesterId },
+        { courseId: foundCourse.name },
+        { teacherId: foundTeacher.name },
+        { departmentId: foundDepartment.name },
+        { semesterId: foundSemester.name },
         { batch: batch },
       ]);
       if (foundResult) {
@@ -667,10 +666,10 @@ module.exports = {
           }
         });
         const newResult = new Result({
-          courseId: courseId,
-          teacherId: foundTeacher._id,
-          departmentId: departmentId,
-          semesterId: semesterId,
+          courseId: foundCourse.name,
+          teacherId: foundTeacher.name,
+          departmentId: foundDepartment.name,
+          semesterId: foundSemester.name,
           batch: batch,
           courseDetail: courseDetail,
           teacherDetail: teacherDetail,
@@ -688,99 +687,92 @@ module.exports = {
   }),
   dashboard: tryCatch(async (req, res, next) => {
     const { department, semester, batch } = req.body;
-
-    const results = await Result.find().and([
-      { departmentId: department },
-      { semesterId: semester },
+    let foundSemester = await Semester.findOne({ name: semester });
+    let foundDepartment = await Department.findOne({ name: department });
+    if (foundSemester && foundDepartment && batch) {
+      updatedResults = await Result.find().and([
+        { departmentId: foundDepartment.name },
+        { semesterId: foundSemester.name },
+        { batch: batch },
+      ]);
+    }
+    let students = await User.find().and([
+      { departmentId: foundDepartment._id },
+      { semesterId: foundSemester._id },
       { batch: batch },
     ]);
-    if (results) {
-      let updatedResults = results.map(async (r) => {
-        let foundCourse = await Course.findOne({ _id: r.courseId });
-        let foundTeacher = await Teacher.findOne({ _id: r.teacherId });
-        let foundSemester = await Semester.findOne({ _id: r.semesterId });
-        let foundDepartment = await Department.findOne({
-          _id: r.departmentId,
-        });
-        if (foundSemester && foundTeacher && foundDepartment && foundCourse) {
-          r.teacherId = foundTeacher.name;
-          r.semesterId = foundSemester.name;
-          r.departmentId = foundDepartment.name;
-          r.courseId = foundCourse.name;
-          return r;
-        }
-      });
-      updatedResults = await Promise.all(updatedResults);
-      let x = updatedResults;
-      updatedResults = [];
+    students = await Promise.all(students);
+    students = students.length;
 
-      x.map((r) => {
-        if (r) {
-          updatedResults.push(r);
-        }
-      });
+    updatedResults = await Promise.all(updatedResults);
+    let x = updatedResults;
+    updatedResults = [];
 
-      return res.status(200).json({
-        success: true,
-        updatedResults,
-      });
-    }
+    x.map((r) => {
+      if (r) {
+        updatedResults.push(r);
+      }
+    });
+    return res.status(200).json({
+      success: true,
+      updatedResults,
+      students,
+    });
   }),
 
   getResult: tryCatch(async (req, res, next) => {
-    const results = await Result.find();
+    const updatedResults = await Result.find();
+    return res.status(200).json({
+      success: true,
+      updatedResults,
+    });
+    // if (results) {
+    //   let updatedResults = results.map(async (r) => {
+    //     let foundCourse = await Course.findOne({ _id: r.courseId });
+    //     let foundTeacher = await Teacher.findOne({ _id: r.teacherId });
+    //     let foundSemester = await Semester.findOne({ _id: r.semesterId });
+    //     let foundDepartment = await Department.findOne({
+    //       _id: r.departmentId,
+    //     });
+    //     if (foundSemester && foundTeacher && foundDepartment && foundCourse) {
+    //       r.teacherId = foundTeacher.name;
+    //       r.semesterId = foundSemester.name;
+    //       r.departmentId = foundDepartment.name;
+    //       r.courseId = foundCourse.name;
 
-    if (results) {
-      let updatedResults = results.map(async (r) => {
-        let foundCourse = await Course.findOne({ _id: r.courseId });
-        let foundTeacher = await Teacher.findOne({ _id: r.teacherId });
-        let foundSemester = await Semester.findOne({ _id: r.semesterId });
-        let foundDepartment = await Department.findOne({
-          _id: r.departmentId,
-        });
-        if (foundSemester && foundTeacher && foundDepartment && foundCourse) {
-          r.teacherId = foundTeacher.name;
-          r.semesterId = foundSemester.name;
-          r.departmentId = foundDepartment.name;
-          r.courseId = foundCourse.name;
+    //       let newdetail = [];
 
-          let newdetail = [];
+    //       newdetail = r.courseDetail.map(async (t) => {
+    //         let x = await Question.findOne({ _id: t.questionId });
+    //         t.questionId = x.name;
+    //         return t;
+    //       });
+    //       newdetail = await Promise.all(newdetail);
+    //       r.courseDetail = newdetail;
 
-          newdetail = r.courseDetail.map(async (t) => {
-            let x = await Question.findOne({ _id: t.questionId });
-            t.questionId = x.name;
-            return t;
-          });
-          newdetail = await Promise.all(newdetail);
-          r.courseDetail = newdetail;
+    //       newdetail = r.teacherDetail.map(async (t) => {
+    //         let x = await Question.findOne({ _id: t.questionId });
+    //         t.questionId = x.name;
+    //         return t;
+    //       });
 
-          newdetail = r.teacherDetail.map(async (t) => {
-            let x = await Question.findOne({ _id: t.questionId });
-            t.questionId = x.name;
-            return t;
-          });
+    //       newdetail = await Promise.all(newdetail);
+    //       r.teacherDetail = newdetail;
+    //       return r;
+    //     }
+    //   });
 
-          newdetail = await Promise.all(newdetail);
-          r.teacherDetail = newdetail;
-          return r;
-        }
-      });
+    //   updatedResults = await Promise.all(updatedResults);
 
-      updatedResults = await Promise.all(updatedResults);
+    // let x = updatedResults;
+    // updatedResults = [];
+    // x.map((r) => {
+    //   if (r) {
+    //     updatedResults.push(r);
+    //   }
+    // });
 
-      let x = updatedResults;
-      updatedResults = [];
-      x.map((r) => {
-        if (r) {
-          updatedResults.push(r);
-        }
-      });
-
-      return res.status(200).json({
-        success: true,
-        updatedResults,
-      });
-    }
+    // }
   }),
   isAuth: (req, res, next) => {
     res.status(200).json({ success: true });
